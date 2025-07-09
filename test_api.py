@@ -56,29 +56,58 @@ class App(ctk.CTk):
         self.left_frame = ctk.CTkFrame(self, corner_radius=10)
         self.left_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         
-        # --- CORREZIONE QUI ---
-        # Configura come le righe del frame si espandono
-        self.left_frame.grid_rowconfigure(0, weight=0) # Riga header: non si espande
-        self.left_frame.grid_rowconfigure(1, weight=1) # Riga lista file: si espande per riempire lo spazio
-        self.left_frame.grid_rowconfigure(2, weight=0) # Riga pulsante: non si espande
+        self.left_frame.grid_rowconfigure(0, weight=0)
+        self.left_frame.grid_rowconfigure(1, weight=0) # --- MODIFICA: Riga per "seleziona tutti"
+        self.left_frame.grid_rowconfigure(2, weight=1) # --- MODIFICA: Riga per la lista file (si espande)
+        self.left_frame.grid_rowconfigure(3, weight=0) # --- MODIFICA: Riga per il pulsante
         self.left_frame.grid_columnconfigure(0, weight=1)
 
         header_frame = ctk.CTkFrame(self.left_frame, fg_color="transparent")
         header_frame.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="ew")
+        header_frame.grid_columnconfigure(0, weight=1) # Permette al titolo di espandersi
+
         title_label = ctk.CTkLabel(header_frame, text="File Disponibili", font=ctk.CTkFont(size=18, weight="bold"))
-        title_label.pack(side="left")
-        refresh_button = ctk.CTkButton(header_frame, text="🔄", width=30, command=self.load_available_files)
-        refresh_button.pack(side="right")
+        title_label.grid(row=0, column=0, sticky="w")
         
+        # --- MODIFICA: Pulsante di ricarica migliorato ---
+        # Usa un'icona unicode più pulita e uno stile moderno (senza sfondo/bordi)
+        refresh_button = ctk.CTkButton(
+            header_frame, 
+            text=u"\u21BB", # Simbolo di ricarica (freccia circolare)
+            width=30, 
+            height=30,
+            command=self.load_available_files,
+            font=ctk.CTkFont(size=22),
+            fg_color="transparent",
+            hover_color=self.cget("fg_color"), # Usa il colore di sfondo del frame per l'hover
+            text_color=("gray10", "gray90")
+        )
+        refresh_button.grid(row=0, column=1, padx=(10, 0), sticky="e")
+        
+        # --- AGGIUNTA: Checkbox "Seleziona Tutti" ---
+        select_all_frame = ctk.CTkFrame(self.left_frame, fg_color="transparent")
+        select_all_frame.grid(row=1, column=0, padx=20, pady=(0, 5), sticky="w")
+        
+        self.select_all_var = ctk.IntVar(value=0)
+        self.select_all_checkbox = ctk.CTkCheckBox(
+            select_all_frame, 
+            text="Seleziona/Deseleziona tutti", 
+            variable=self.select_all_var,
+            command=self.toggle_select_all
+        )
+        self.select_all_checkbox.pack(anchor="w")
+
+        # --- NOTA: La gestione delle barre di scorrimento è già automatica ---
+        # CTkScrollableFrame mostra le barre solo se il contenuto eccede lo spazio.
+        # Il comportamento richiesto è quindi quello predefinito.
         self.file_selection_frame = ctk.CTkScrollableFrame(self.left_frame, label_text="")
-        self.file_selection_frame.grid(row=1, column=0, padx=20, pady=5, sticky="nsew")
+        self.file_selection_frame.grid(row=2, column=0, padx=20, pady=5, sticky="nsew")
         self.checkboxes = {}
         
         self.get_files_button = ctk.CTkButton(self.left_frame, text="Recupera File Selezionati", command=self.start_get_files_thread)
-        # --- CORREZIONE QUI ---
-        # Rimosso l'argomento "valign" non valido
-        self.get_files_button.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
+        self.get_files_button.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
 
+        # --- Sezione destra (invariata) ---
         self.right_frame = ctk.CTkFrame(self, corner_radius=10)
         self.right_frame.grid(row=0, column=1, padx=(0, 10), pady=10, sticky="nsew")
         self.right_frame.grid_rowconfigure(1, weight=1)
@@ -110,19 +139,33 @@ class App(ctk.CTk):
 
         self.load_available_files()
 
+    # --- AGGIUNTA: Funzione per gestire la checkbox "Seleziona Tutti" ---
+    def toggle_select_all(self):
+        """ Seleziona o deseleziona tutte le checkbox dei file. """
+        is_checked = self.select_all_var.get()
+        for checkbox in self.checkboxes.values():
+            if is_checked:
+                checkbox.select()
+            else:
+                checkbox.deselect()
+
     def load_available_files(self):
         for widget in self.file_selection_frame.winfo_children(): widget.destroy()
         self.checkboxes.clear()
+        # --- AGGIUNTA: Resetta la checkbox "Seleziona Tutti" quando si ricarica la lista ---
+        self.select_all_var.set(0)
         try:
             response = requests.get(f"{API_BASE_URL}/list_files", timeout=5)
             response.raise_for_status()
             data = response.json()
             if data.get("status") == "success":
                 self.get_files_button.configure(state="normal")
+                self.select_all_checkbox.configure(state="normal")
                 files = data.get("files", [])
                 if not files:
                     label = ctk.CTkLabel(self.file_selection_frame, text="Nessun file sul server.")
                     label.pack(padx=10, pady=10)
+                    self.select_all_checkbox.configure(state="disabled") # Disabilita se non ci sono file
                     return
                 for filename in files:
                     checkbox = ctk.CTkCheckBox(self.file_selection_frame, text=filename)
@@ -131,9 +174,10 @@ class App(ctk.CTk):
             else:
                 raise requests.exceptions.RequestException(f"Errore API: {data.get('message')}")
         except requests.exceptions.RequestException as e:
-            error_label = ctk.CTkLabel(self.file_selection_frame, text=f"❌ Server non raggiungibile.\nClicca 🔄 per riprovare.", text_color="gray50", wraplength=250)
+            error_label = ctk.CTkLabel(self.file_selection_frame, text=f"❌ Server non raggiungibile.\nClicca ⟳ per riprovare.", text_color="gray50", wraplength=250)
             error_label.pack(padx=10, pady=10, expand=True)
             self.get_files_button.configure(state="disabled")
+            self.select_all_checkbox.configure(state="disabled")
 
     def create_textbox_viewer(self, file_path, is_binary=False):
         for widget in self.viewer_content_frame.winfo_children(): widget.destroy()
@@ -189,14 +233,20 @@ class App(ctk.CTk):
         for widget in self.viewer_content_frame.winfo_children(): widget.destroy()
         try:
             pil_image = Image.open(image_path)
-            container_width = self.viewer_content_frame.winfo_width()
-            container_height = self.viewer_content_frame.winfo_height()
+            # Dare un po' di margine per non far toccare l'immagine ai bordi
+            container_width = self.viewer_content_frame.winfo_width() - 20
+            container_height = self.viewer_content_frame.winfo_height() - 20
+            
+            # Assicurarsi che le dimensioni non siano zero (può accadere all'avvio)
+            if container_width <= 0 or container_height <= 0:
+                self.after(50, lambda: self.display_image(image_path)) # Riprova tra 50ms
+                return
+                
             image_copy = pil_image.copy()
-            image_copy.thumbnail((container_width - 10, container_height - 10), Image.Resampling.LANCZOS)
+            image_copy.thumbnail((container_width, container_height), Image.Resampling.LANCZOS)
             ctk_image = ctk.CTkImage(light_image=image_copy, dark_image=image_copy, size=image_copy.size)
             image_label = ctk.CTkLabel(self.viewer_content_frame, text="", image=ctk_image)
-            image_label.image = ctk_image
-            image_label.pack(padx=5, pady=5, expand=True)
+            image_label.pack(padx=10, pady=10, expand=True)
         except Exception as e:
             self.display_message_in_viewer(f"Errore caricamento immagine:\n{e}")
     def display_text(self, text_path): self.create_textbox_viewer(text_path, is_binary=False)
@@ -209,7 +259,7 @@ class App(ctk.CTk):
         card = ctk.CTkFrame(self.results_scroll_frame, corner_radius=6, border_width=1)
         card.pack(fill="x", padx=5, pady=5)
         label_text = f"✅ {filename}" if success else f"❌ {filename}"
-        border_color = "#28a745" if success else "#dc3545"
+        border_color = ("#28a745", "#28a745") if success else ("#dc3545", "#dc3545")
         card.configure(border_color=border_color)
         label = ctk.CTkLabel(card, text=label_text, font=ctk.CTkFont(weight="bold"))
         label.pack(side="left", padx=10, pady=10)
@@ -247,8 +297,9 @@ class App(ctk.CTk):
             response = requests.post(f"{API_BASE_URL}/get_documents", json=payload, timeout=20)
             response.raise_for_status()
             self.after(0, self.display_results, response.json())
-        except requests.exceptions.RequestException:
-            print("Errore durante il recupero dei file")
+        except requests.exceptions.RequestException as e:
+            # Mostra un errore più visibile all'utente
+            self.after(0, self.display_results, {"errors": {"Errore di Connessione": str(e)}})
         finally:
             self.after(0, self.get_files_button.configure, {"state": "normal", "text": "Recupera File Selezionati"})
     @staticmethod
