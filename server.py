@@ -44,6 +44,7 @@ def get_documents():
         data = request.get_json()
         if not data or 'documents' not in data:
             return jsonify({"status": "error", "message": "Richiesta malformata."}), 400
+        print(f"visualizzo richiesta: {data}")
         filenames = data['documents']
         if not isinstance(filenames, list):
             return jsonify({"status": "error", "message": "La chiave 'documents' deve contenere una lista."}), 400
