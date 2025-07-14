@@ -1,0 +1,302 @@
+simulation_setup:
+  headless: false
+  num_images_to_generate: 2
+  simulation_updates_after_setup: 200
+paths:
+  texture_folder_relative: texture
+  base_materials_usd: /World/Looks
+  floor_prim_usd: /World/PavimentoConMaterialeEsistente
+  box_parent_usd: /World/SpawnedBasicBoxes
+  camera_prim_usd: /World/ReplicatorCamera
+  light_base_usd: /World/DefaultRandomLights
+  asset_spawner_parent_usd: /World
+  output_replicator_dir_base: output
+  depth_visualization_filename: depth_visualization.png
+invisible_wall_during_fall:
+  probability_activation: 0.95
+camera:
+  height_min: 5.0
+  height_max: 7.5
+  focal_length: 35.0
+  rotation_xyz:
+  - -90.0
+  - 0.0
+  - 0.0
+stereo_camera_setup:
+  enable: true
+  rig_prim_path: /World/StereoRig
+  left_cam_name: StereoLeft
+  right_cam_name: StereoRight
+material_creator:
+  texture_scale_range:
+  - 0.1
+  - 0.4
+  metallic_range:
+  - 0.0
+  - 1.0
+  roughness_range:
+  - 0.05
+  - 0.85
+  specular_level_range:
+  - 0.0
+  - 1.0
+  ior_range:
+  - 1.0
+  - 2.5
+  emissive_probability: 1.0
+  base_color_rgb_range:
+  - - 0.5
+    - 0.5
+    - 0.5
+  - - 1.0
+    - 1.0
+    - 1.0
+  emissive_rgb_range:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  emissive_strength_range:
+  - 0.0
+  - 200.0
+  clearcoat_intensity_range:
+  - 0.0
+  - 1.0
+  clearcoat_roughness_range:
+  - 0.0
+  - 1.0
+  normal_intensity_range:
+  - 0.0
+  - 1.0
+light_creator:
+  num_lights_range:
+  - 1
+  - 3
+  clear_existing: true
+  configurations:
+  - type: DomeLight
+    orientation_euler_range:
+      x:
+      - 0.0
+      - 0.0
+      y:
+      - -180.0
+      - 180.0
+      z:
+      - 0.0
+      - 0.0
+    intensity_range:
+    - 1000.0
+    - 1500.0
+    color_range:
+    - - 0.15
+      - 0.15
+      - 0.2
+    - - 0.5
+      - 0.5
+      - 0.7
+    enable_color_temperature: false
+    temperature_k_range:
+    - 4000.0
+    - 30000.0
+  - type: SphereLight
+    position_range:
+      x:
+      - -3.0
+      - 3.0
+      y:
+      - -3.0
+      - 3.0
+      z:
+      - 9.0
+      - 15.0
+    orientation_euler_range:
+      x:
+      - 0.0
+      - 360.0
+      y:
+      - 0.0
+      - 360.0
+      z:
+      - 0.0
+      - 360.0
+    intensity_range:
+    - 20000.0
+    - 60000.0
+    color_range:
+    - - 0.5
+      - 0.6
+      - 0.2
+    - - 1.0
+      - 1.0
+      - 1.0
+    radius_range:
+    - 0.6
+    - 2.0
+  - type: DistantLight
+    position_range:
+      x:
+      - -10.0
+      - 10.0
+      y:
+      - -10.0
+      - 10.0
+      z:
+      - 5.0
+      - 15.0
+    orientation_euler_range:
+      x:
+      - -60.0
+      - 60.0
+      y:
+      - -60.0
+      - 60.0
+      z:
+      - -1.0
+      - 1.0
+    intensity_range:
+    - 1000.0
+    - 1500.0
+    color_range:
+    - - 0.5
+      - 0.6
+      - 0.2
+    - - 1.0
+      - 1.0
+      - 1.0
+    angle_range:
+    - 0.5
+    - 2.5
+asset_spawner:
+  enable: true
+  scene_origin_xyz:
+  - 0.0
+  - 0.0
+  - 0.0
+  cm_to_m_scale_factor: 0.01
+  asset_material_application_probability: 0.8
+  asset_type_choice_override: ''
+  random_asset_rotation_z_range:
+  - 0.0
+  - 360.0
+  pallet:
+    usd_asset_paths:
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Shipping/Pallets/Plastic/Drum_A/PlasticDrumPallet_A01_PR_NVD_01.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial/Pallets/Pallet_A1.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Shipping/Pallets/Metal/Aluminum_A/AluminumPallet_A01_PR_NVD_01.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Shipping/Pallets/Wood/Block_A/BlockPallet_A03_PR_NVD_01.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Shipping/Pallets/Wood/Block_B/BlockPallet_B03_PR_NVD_01.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Shipping/Wood_Crates/PalletCollar_A/WoodPalletCollar_A02_100x120x24cm_PR_NV_01.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Shipping/Pallets/Wood/Block_A/BlockPallet_A01_PR_NVD_01.usd
+    scale_multiplier_xyz:
+    - 1.0
+    - 1.0
+    - 1.0
+    mass_kg: 20.0
+    semantic_label: pallet
+    prim_name_instance_base: ImportedPallet
+  container:
+    usd_asset_paths:
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Storage/Totes/Tote_B/Tote_B08_60x40x15cm_PR_V_NVD_01.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Storage/Containers/Container_H/Container_H14_60x40x15cm_PR_V_NVD_01.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Storage/Containers/Container_A/Container_A04_71x56x38cm_PR_V_NVD_01.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Storage/Containers/Container_H/Container_H03_60x40x23cm_PR_V_NVD_01.usd
+    - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/DigitalTwin/Assets/Warehouse/Storage/Containers/Container_F/Container_F26_116x80x52cm_PR_V_NVD_01.usd
+    scale_multiplier_xyz:
+    - 2.0
+    - 2.0
+    - 2.0
+    mass_kg: 8.0
+    semantic_label: container
+    prim_name_instance_base: ImportedContainer
+box_spawner:
+  enable: true
+  num_to_spawn_range:
+  - 1
+  - 1
+  mass_kg: 0.02
+  base_z_offset: 1.2
+  z_jitter: 0.7
+  xy_jitter_range:
+  - -0.3
+  - 0.3
+  procedural_vs_asset_probability: 1.0
+  asset_material_override_probability: 0.0
+  asset_usd_paths:
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial/Containers/Cardboard/Cardbox_A2.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial/Containers/Cardboard/Cardbox_A3.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial/Containers/Cardboard/Cardbox_C3.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial/Containers/Cardboard/Cardbox_B3.usd
+  scale_min: 0.8
+  scale_max: 2.0
+  default_color_rgb:
+  - 0.8
+  - 0.2
+  - 0.2
+  semantic_label: box
+object_creator_ycb:
+  enable: false
+  asset_list:
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/002_master_chef_can.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/003_cracker_box.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/004_sugar_box.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/005_tomato_soup_can.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/006_mustard_bottle.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/007_tuna_fish_can.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/009_gelatin_box.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/010_potted_meat_can.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/011_banana.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/019_pitcher_base.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/021_bleach_cleanser.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/024_bowl.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/025_mug.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/035_power_drill.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/037_scissors.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/040_large_marker.usd
+  - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Props/YCB/Axis_Aligned/051_large_clamp.usd
+  materials_folder_path: /World/Looks
+  num_to_spawn_range:
+  - 1
+  - 2
+  spawn_parent_path: /World/GeneratedYCBObjects
+  base_pos_xy:
+  - 0.0
+  - 0.0
+  spawn_z_offset: 1.0
+  spawn_z_jitter: 0.2
+  spawn_xy_jitter_range:
+  - -0.3
+  - 0.3
+  spawn_scale_min: 2.0
+  spawn_scale_max: 2.5
+  spawn_mass: 0.02
+  semantic_label: ycb_object
+  asset_material_override_probability: 0.75
+replicator:
+  resolution_wh:
+  - 1280
+  - 720
+  renderer_active: rtx
+  rtx_rendermode: PathTracing
+  rtx_pathtracing_spp: 64
+  stereo_baseline: 0.08
+  annotators_to_attach:
+  - rgb
+  - instance_segmentation
+  - normals
+  - bounding_box_2d_tight
+  - distance_to_camera
+  - pointcloud
+  - camera_params
+  - distance_to_image_plane
+  writer_outputs:
+    rgb: true
+    instance_segmentation: true
+    normals: true
+    bounding_box_2d_tight: false
+    pointcloud: true
+    distance_to_camera: false
+    camera_params: true
+    distance_to_image_plane: true
