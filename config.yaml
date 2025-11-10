@@ -1,6 +1,6 @@
 simulation_setup:
-  headless: false
-  num_images_to_generate: 2
+  headless: true
+  num_images_to_generate: 1
   simulation_updates_after_setup: 200
 paths:
   texture_folder_relative: texture
@@ -13,7 +13,7 @@ paths:
   output_replicator_dir_base: output
   depth_visualization_filename: depth_visualization.png
 invisible_wall_during_fall:
-  probability_activation: 0.95
+  probability_activation: 0.0
 camera:
   height_min: 5.0
   height_max: 7.5
@@ -176,8 +176,8 @@ asset_spawner:
   - 0.0
   - 0.0
   cm_to_m_scale_factor: 0.01
-  asset_material_application_probability: 0.8
-  asset_type_choice_override: ''
+  asset_material_application_probability: 0.0
+  asset_type_choice_override: pallet
   random_asset_rotation_z_range:
   - 0.0
   - 360.0
@@ -218,19 +218,19 @@ box_spawner:
   - 1
   mass_kg: 0.02
   base_z_offset: 1.2
-  z_jitter: 0.7
+  z_jitter: 0.8
   xy_jitter_range:
   - -0.3
   - 0.3
-  procedural_vs_asset_probability: 1.0
+  procedural_vs_asset_probability: 0.0
   asset_material_override_probability: 0.0
   asset_usd_paths:
   - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial/Containers/Cardboard/Cardbox_A2.usd
   - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial/Containers/Cardboard/Cardbox_A3.usd
   - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial/Containers/Cardboard/Cardbox_C3.usd
   - https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/ArchVis/Industrial/Containers/Cardboard/Cardbox_B3.usd
-  scale_min: 0.8
-  scale_max: 2.0
+  scale_min: 0.7
+  scale_max: 1.8
   default_color_rgb:
   - 0.8
   - 0.2
@@ -259,13 +259,13 @@ object_creator_ycb:
   materials_folder_path: /World/Looks
   num_to_spawn_range:
   - 1
-  - 2
+  - 1
   spawn_parent_path: /World/GeneratedYCBObjects
   base_pos_xy:
   - 0.0
   - 0.0
   spawn_z_offset: 1.0
-  spawn_z_jitter: 0.2
+  spawn_z_jitter: 0.3
   spawn_xy_jitter_range:
   - -0.3
   - 0.3
@@ -294,9 +294,14 @@ replicator:
   writer_outputs:
     rgb: true
     instance_segmentation: true
-    normals: true
+    normals: false
     bounding_box_2d_tight: false
-    pointcloud: true
+    pointcloud: false
     distance_to_camera: false
     camera_params: true
     distance_to_image_plane: true
+grip:
+  grip_sample: 0.2
+  max_tilt_deg: 65.0
+pinza:
+  num_candidate_poses: 3
