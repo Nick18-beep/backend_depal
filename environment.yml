@@ -1,6 +1,15 @@
-name: o3d-env
+﻿name: backend-depal
 channels:
+  - conda-forge
   - defaults
 dependencies:
-  - python=3.10
-prefix: C:\Users\cm03696\AppData\Local\miniconda3\envs\o3d-env
+  - python=3.11
+  - pip
+  - numpy
+  - requests
+  - pyyaml
+  - pillow
+  - tk
+  - open3d
+  - pip:
+      - customtkinter
